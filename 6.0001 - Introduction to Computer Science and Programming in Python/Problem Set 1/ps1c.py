@@ -5,12 +5,30 @@ from ps1a import get_input
 
 def in_range(number,comparison,tolerance):
     '''
+    Determines if a number is within the required proximity to a target value.
+    
+    number: float or integer
+    comparison: float or integer
+    tolerance float or integer
+    
+    returns:Boolean
     '''
     return (comparison-tolerance)<= number <= (comparison + tolerance)
      
 
 def money_saved(months, savings, guess, salary, s_a_r, monthly_return, downpayment, tolerance):
     '''
+    Calculates the amount of money saved over the given number of months with the input required.
+    The calculation will stop early if we go beyond an inputed value.
+    
+    months: integer
+    savings: integer or float
+    guess: float
+    salary: integer or float
+    monthly_return: float
+    downpayment: integer or float
+    tolerace: integer or float
+    
     '''
     for i in range(months):
         if savings > (downpayment+epsilon):
@@ -23,6 +41,15 @@ def money_saved(months, savings, guess, salary, s_a_r, monthly_return, downpayme
 
 def bisection_search(high, low, guess, value, target, tolerance):
     '''
+    Changes the high and low values that are used in a bisection search.
+    
+    high: integer
+    low: integer
+    guess: float
+    value: integer or float
+    target: integer or float
+    tolerance: integer or float
+    
     '''
     
     if value<target-tolerance:
