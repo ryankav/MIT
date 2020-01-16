@@ -6,6 +6,16 @@ import trace
 ################################################################################
 
 def algorithm1(problem, trace = None):
+    '''
+    aim of this algorithm is to select the middle column in the array.
+    Then find the maximum in that column. After that determine if the maximum
+    value in the middle column is a peak. If it is return it.
+    
+    If not then decide which of the values in the neighbouring columns are 
+    larger than it. If it is to the left then disregard all columns to the 
+    right and call the algorithm again, recursively, for this newly formed 
+    array. If it is to the right the same but disregarding columns on the left.
+    '''
     # if it's empty, we're done 
     if problem.numRow <= 0 or problem.numCol <= 0:
         return None
@@ -14,6 +24,18 @@ def algorithm1(problem, trace = None):
     mid = problem.numCol // 2
 
     # information about the two subproblems
+# =============================================================================
+#     Below is the section of code that will be used to perform a recursive 
+#     step if the peak isn't found initially.
+#     
+#     The first tuple lists the number of rows in the matrix which will stay
+#     constant throughout the recursive steps.
+#
+#     The second and third tuple create a tuple listing the column starting 
+#     location and how many columns the subproblem will have. These are then
+#     stored in a list ready to be used later
+# =============================================================================
+    
     (subStartR, subNumR) = (0, problem.numRow)
     (subStartC1, subNumC1) = (0, mid)
     (subStartC2, subNumC2) = (mid + 1, problem.numCol - (mid + 1))
@@ -46,6 +68,15 @@ def algorithm1(problem, trace = None):
     return problem.getLocationInSelf(sub, result)
 
 def algorithm2(problem, location = (0, 0), trace = None):
+    '''
+    This algoritm starts in the corner and then searches for the largest
+    neighbour. It then repeats that process for the next element
+    '''
+    
+    
+    
+    
+    
     # if it's empty, we're done 
     if problem.numRow <= 0 or problem.numCol <= 0:
         return None
@@ -61,6 +92,18 @@ def algorithm2(problem, location = (0, 0), trace = None):
         return algorithm2(problem, nextLocation, trace)
 
 def algorithm3(problem, bestSeen = None, trace = None):
+    
+    '''
+    This algorithm looks for the maximum value that appears in a cross created
+    by the middle column and the middle row of the array. It then checks if any
+    of the neighbours around this maximum value is larger. If the maximum value
+    contained within the cross is larger than all it's neighbour it is a peak
+    so return it. 
+    
+    If there is a larger neighbour we check if that value is the largest value
+    we've seen so far. We then calle the function recursively, inputting the
+    quadrant that contains the largest value we've seen so far.
+    '''
     # if it's empty, we're done 
     if problem.numRow <= 0 or problem.numCol <= 0:
         return None
@@ -110,6 +153,11 @@ def algorithm3(problem, bestSeen = None, trace = None):
     return problem.getLocationInSelf(sub, result)
 
 def algorithm4(problem, bestSeen = None, rowSplit = True, trace = None):
+    
+    '''
+    
+    '''
+    
     # if it's empty, we're done 
     if problem.numRow <= 0 or problem.numCol <= 0:
         return None
