@@ -4,7 +4,7 @@ import random
 import pprint
 import utils
 
-def randomProblem(rows = 10, columns = 10, max = 1000):
+def randomProblem(rows = 8, columns = 8, max = 100):
     """
     Generate a random matrix, with the specified number of rows and
     columns.  Each number is distributed uniformly at random between
