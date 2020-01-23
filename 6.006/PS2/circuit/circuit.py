@@ -350,20 +350,71 @@ class PriorityQueue:
     def __len__(self):
         # Number of elements in the queue.
         return len(self.queue)
+
+
+    def min_heapify_from_above(self, location):
+
+        if 2*(location+1)<len(self.queue):
+            left_child=self.queue[(2*location)+1]
+            right_child=self.queue[(2*location)+2]
+
+            if left_child<right_child:
+                
+                if left_child<self.queue[location]:
+                    #swap elements
+                    self.queue[location],self.queue[(2*location)+1]=self.queue[(2*location)+1],self.queue[location]
+                    self.min_heapify_from_above((2*location)+1)
+                else:
+                    return
+            else:
+                if right_child<self.queue[location]:
+                    #swap elements
+                    self.queue[location],self.queue[(2*location)+2]=self.queue[(2*location)+2],self.queue[location]
+                    self.min_heapify_from_above((2*location)+2)
+                else:
+                    return
+        elif 2*(location+1)==len(self.queue):
+            if self.queue[(2*location)+1]<self.queue[location]:
+                 #swap elements
+                    self.queue[location],self.queue[(2*location)+1]=self.queue[(2*location)+1],self.queue[location]
+                    return
+        else:
+            return
+
+    def min_heapify_from_below(self,location):
+
+        if location==0:
+            return
+        else:
+            parent = (location-1)//2
+
+            if self.queue[location]<self.queue[parent]:
+
+                #swap values
+                self.queue[location],self.queue[parent]=self.queue[parent],self.queue[location]
+
+                self.min_heapify_from_below(parent)
+
+            else:
+                return
+
+
+
     
     def append(self, key):
         """Inserts an element in the priority queue."""
         if key is None:
             raise ValueError('Cannot insert None in the queue')
         self.queue.append(key)
-        self.min_index = None
+        self.min_heapify_from_below(len(self.queue)-1)
+        self.min_index=0
     
     def min(self):
         """The smallest element in the queue."""
         if len(self.queue) == 0:
             return None
-        self._find_min()
-        return self.queue[self.min_index]
+        
+        return self.queue[0]
     
     def pop(self):
         """Removes the minimum element in the queue.
@@ -373,9 +424,11 @@ class PriorityQueue:
         """
         if len(self.queue) == 0:
             return None
-        self._find_min()
-        popped_key = self.queue.pop(self.min_index)
-        self.min_index = None
+        #swap first and last element    
+        self.queue[0],self.queue[len(self.queue)-1]=self.queue[len(self.queue)-1],self.queue[0]
+        popped_key = self.queue.pop(len(self.queue)-1)
+        self.min_heapify_from_above(0)
+        self.min_index = 0
         return popped_key
     
     def _find_min(self):
@@ -384,13 +437,8 @@ class PriorityQueue:
         # This method may crash if called when the queue is empty.
         if self.min_index is not None:
             return
-        min = self.queue[0]
-        self.min_index = 0
-        for i in xrange(1, len(self.queue)):
-            key = self.queue[i]
-            if key < min:
-                min = key
-                self.min_index = i
+        else:
+            self.min_index=0
 
 class Simulation:
     """State needed to compute a circuit's state as it evolves over time."""
