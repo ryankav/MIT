@@ -352,16 +352,20 @@ class CrossVerifier(object):
 
       elif event_type == 'query':
         self.trace_sweep_line(event_x)
-        cross_wires = []
-        for kwp in self.index.list(KeyWirePairL(wire.y1),
-                                   KeyWirePairH(wire.y2)):
-          if wire.intersects(kwp.wire):
-            cross_wires.append(kwp.wire)
+        
+        
         if count_only:
-          result += len(cross_wires)
+        	result+=self.index.count(KeyWirePairL(wire.y1),
+        					KeyWirePairH(wire.y2))
+
         else:
-          for cross_wire in cross_wires:
-            result.add_crossing(wire, cross_wire)
+        	cross_wires = []
+        	for kwp in self.index.list(KeyWirePairL(wire.y1),
+                                   KeyWirePairH(wire.y2)):
+        		cross_wires.append(kwp.wire)
+        		
+        		for cross_wire in cross_wires:
+        			result.add_crossing(wire, cross_wire)
 
     return result
   
