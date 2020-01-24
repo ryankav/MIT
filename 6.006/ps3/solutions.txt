@@ -1,0 +1,75 @@
+3-1 
+
+a) 4 - AVL trees 
+
+b) 3 - log(N) height of AVL tree is at most log(N)
+
+c) 3 - log(N) see above
+
+d) 3 - log(N) see above
+
+e) 6 - Rank(h)-Rank(l)+1; as count is +ve and h>l so need R(h)-R(l) and then +1 as can be equal to l
+
+f) 5 - R(h)-R(l); as l isn't in the count so can't be equal to l
+
+g) 6 - R(h)-R(l)+1; need to account for the fact count can equal l
+
+h) 5 - R(h)-R(l); can't be l so don't have to account for the possibility
+
+i) 4 - the number of nodes in the subtree rooted at node. Easy to compute rank from this info and easy to compute this information.
+	If we were to use rank of node as this information then appending a new node would require us to recompute all the ranks of nodes 
+	with a higher value rank than the new node, this would take linear time.
+
+j) 1 - just an integer stored in each node so should be constant storage
+
+k) 2 - the value is 1 as N4 is a leaf and therefore has itself as the only node.
+
+l) 3 - the value is 3.
+
+m) 4 - the value is 6
+
+n) 4 - the value is 10
+
+o) All except from Heapify.
+
+p) 3 - finding the required nodes take log(n) time then working out the count from there would take constant time
+
+q) 2 - lowest common ancestor
+
+r) 3 - need to find a node within an AVL tree this has at worst O(log(N)) complexity
+
+s) 8 - Initially start with a root that is within the range l-h. return a list of length L
+	so have at least O(L) complexity. However, there are some nodes we visit that we won't return in our list.
+	These will add to the complexity. This adds a O(log(n')) - here n' is the number of nodes within the subtree returned from LCA trer
+	complexity in the worst case this can be seen by considering that a node with a key equal to the value h is, 
+	itself, a leaf but is the key that comes next - in an ordered list - after the key contained within the root.
+	In this example would start at root then go to the right node from there we would continually go left down the tree until we reached the leaf. 
+	However none of the nodes inbetween would appear in L.
+
+t) 8 - O(Log(N)) + O(L) same as above as initally do log work to find a subtree with a root within the range l-h. Then after that
+	do at most the remainder of the height through the subtree which gives  
+
+3-2 
+
+a) Intersets
+
+b)187590314
+
+c i) True
+  ii) True
+  iii) False
+  iv) False
+  v) True
+
+d) 1 
+
+e) 2
+
+f) 4
+
+g) 3
+
+h) 2
+
+i) 2
+ 
