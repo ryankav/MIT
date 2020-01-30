@@ -137,41 +137,317 @@ class WireLayer(object):
       
     return layer
 
+class AVL_Node(object):
+    
+    def __init__(self,key):
+        
+        self.key = key
+        self.left = None
+        self.right = None
+        self.height = 0
+        self.sub_nodes = 1
+    
+    def __lt__(self,other):
+        
+        return self.key < other.key
+    
+    def __le__(self,other):
+        
+        return self.key <= other.key
+    
+    def __gt__(self,other):
+        
+        return self.key > other.key
+    
+    def __ge__(self,other):
+        
+        return self.key >= other.key
+    
+    def __eq__(self,other):
+        
+        return self.key == other.key
+    
+    def __ne__(self,other):
+        
+        return self.key != other.key
+    
+    def __repr__(self):
+        
+        return '<AVL_Node with key: ' + str(self.key) + '>'
+        
+
+    def add(self,node):
+        
+        if node>self:
+            if not self.right:
+                self.right=node
+                
+            else:
+                self.right=self.right.add(node)
+        else:
+            if not self.left:
+                self.left=node
+                
+            else:
+                self.left=self.left.add(node)
+        
+        new_root = self._rebalance()
+        
+        return new_root
+    
+    def delete(self,node):
+        
+        if node == self:  
+            if not self.right or not self.left:
+                new_root = self.right or self.left
+                
+                return new_root
+            
+            balance = self._get_balance()
+            
+            if balance>0:
+                new_root,self.left=self.left._pop_max()
+                new_root.left,new_root.right = self.left, self.right
+                new_root=new_root._rebalance()
+                
+            else:
+                new_root, self.right = self.right._pop_min()
+                new_root.left,new_root.right = self.left, self.right
+                new_root=new_root._rebalance()
+        
+        elif node > self:
+            if not self.right:
+                
+                return self
+            
+            self.right=self.right.delete(node)
+            new_root=self._rebalance()
+            
+        else: 
+            if not self.left:
+                return self
+            
+            self.left = self.left.delete(node)
+            new_root=self._rebalance()
+        
+        return new_root
+    
+    def rank(self,node,check=False):
+        
+        count = self.sub_nodes
+        root=self
+        
+        while root:
+            if node==root:
+                count-=root._get_others_sub_nodes(root.right)
+                if check:
+                    return count,True
+                return count
+            
+            elif root<node:
+                root=root.right
+                
+            else:
+                count-=(1+root._get_others_sub_nodes(root.right))
+                root=root.left
+        if check:
+            return count, False
+        
+        return count
+        
+    def lca(self,low,high):
+        
+        root = self
+        while not (low<=root<=high):
+            if low<root:
+                root=root.left
+                
+            else:
+                root=root.right
+            
+            if not root:
+                return root
+        
+        return root
+    
+    def node_list(self,l,h,result):
+        
+        if l<=self<=h:
+            result.append(self.key)
+            
+        if l<=self:
+            if self.left:
+                self.left.node_list(l,h,result)
+                
+        if h>=self:
+            if self.right:
+                self.right.node_list(l,h,result)
+        
+        return
+    
+    def get_height(self):
+        
+        return self.height
+    
+    def get_sub_nodes(self):
+        
+        return self.sub_nodes
+    
+    
+    def _get_others_height(self,node):
+        
+        if not node:
+            return -1
+        
+        return node.height
+    
+    def _get_others_sub_nodes(self, node):
+        
+        if not node:
+            return 0
+        
+        return node.sub_nodes
+    
+    def _update_node(self):
+        
+        self.height = 1 + max(self._get_others_height(self.right),self._get_others_height(self.left))
+        self.sub_nodes = 1 + (self._get_others_sub_nodes(self.right)) + (self._get_others_sub_nodes(self.left))
+   
+    def _get_balance(self):
+        
+        return self._get_others_height(self.left) - self._get_others_height(self.right)
+    
+    def _left_rotate(self):
+        
+        new_root=self.right 
+        new_root.left, self.right = self, new_root.left
+        self._update_node()
+        new_root._update_node()
+        
+        return new_root
+    
+    def _right_rotate(self):
+        
+        new_root=self.left 
+        new_root.right, self.left = self, new_root.right
+        self._update_node()
+        new_root._update_node()
+        
+        return new_root
+    
+    def _rebalance(self):
+        
+        balance = self._get_balance()
+        
+        if balance > 1:
+            if self.left._get_balance()<0:
+                self.left = self.left._left_rotate()
+                new_root = self._right_rotate()
+                
+            else:
+                new_root = self._right_rotate()
+                
+        elif balance < -1:
+            
+            if self.right._get_balance()>0:
+                self.right = self.right._right_rotate()
+                new_root = self._left_rotate()
+                
+            else: 
+                new_root = self._left_rotate()
+                
+        else:
+            new_root=self
+            new_root._update_node()
+            
+        return new_root
+    
+    def _pop_min(self):
+        
+        if not self.left:
+            min_node = self
+            
+            return min_node, self.right
+        
+        else:
+            min_node, self.left = self.left._pop_min()
+            new_root = self._rebalance()
+            
+            return min_node,new_root
+    
+    def _pop_max(self):
+        
+        if not self.right: 
+            max_node = self
+            
+            return max_node, self.left
+        
+        else:
+            max_node, self.right = self.right._pop_max()
+            new_root = self._rebalance()
+            
+            return max_node,new_root
+
 class RangeIndex(object):
-  """Array-based range index implementation."""
+  """AVL_tree range index implementation."""
   
-  def __init__(self):
-    """Initially empty range index."""
-    self.data = []
-  
-  def add(self, key):
-    """Inserts a key in the range index."""
-    if key is None:
-        raise ValueError('Cannot insert nil in the index')
-    self.data.append(key)
-  
-  def remove(self, key):
-    """Removes a key from the range index."""
-    self.data.remove(key)
-  
-  def list(self, first_key, last_key):
-    """List of values for the keys that fall within [first_key, last_key]."""
-    return [key for key in self.data if first_key <= key <= last_key]
-  
-  def count(self, first_key, last_key):
-    """Number of keys that fall within [first_key, last_key]."""
-    result = 0
-    for key in self.data:
-      if first_key <= key <= last_key:
-        result += 1
-    return result
+  def __init__(self,node):
+        
+        self.root=None
+        self.node=node
+        
+        
+  def add(self,key):
+        
+      if not self.root:
+          self.root=self.node(key)
+          return
+        
+      node=self.node(key)
+      self.root=self.root.add(node)
+    
+  def remove(self,key):
+      if not self.root:
+          return
+        
+      node=self.node(key)
+      self.root=self.root.delete(node)
+    
+  def count(self,key_l,key_h):
+      if not self.root:
+          return 0
+        
+      node_l = self.node(key_l)
+      node_h = self.node(key_h)
+        
+      rank_h = self.root.rank(node_h)
+      rank_l, flag = self.root.rank(node_l, check=True)
+      if flag:
+          return rank_h-rank_l+1
+        
+      return rank_h-rank_l
+        
+  def list(self,key_l,key_h):
+      if not self.root:
+          return []
+        
+      node_l=self.node(key_l)
+      node_h=self.node(key_h)
+        
+      result=[]
+      root=self.root.lca(node_l,node_h)
+      if not root:
+        return []
+      root.node_list(node_l,node_h,result)
+        
+      return result
   
 class TracedRangeIndex(RangeIndex):
   """Augments RangeIndex to build a trace for the visualizer."""
   
   def __init__(self, trace):
     """Sets the object receiving tracing info."""
-    RangeIndex.__init__(self)
+    RangeIndex.__init__(self, AVL_Node)
     self.trace = trace
   
   def add(self, key):
@@ -264,7 +540,7 @@ class KeyWirePair(object):
   
   def __ne__(self, other):
     # :nodoc: Delegate comparison to keys.
-    return self.key == other.key and self.wire_id == other.wire_id
+    return self.key != other.key or self.wire_id != other.wire_id
 
   def __hash__(self):
     # :nodoc: Delegate comparison to keys.
@@ -306,7 +582,7 @@ class CrossVerifier(object):
     self._events_from_layer(layer)
     self.events.sort()
   
-    self.index = RangeIndex()
+    self.index = RangeIndex(AVL_Node)
     self.result_set = ResultSet()
     self.performed = False
   
@@ -348,24 +624,20 @@ class CrossVerifier(object):
         self.index.add(KeyWirePair(wire.y1, wire))
 
       elif event_type == 'del':
-      	self.index.remove(KeyWirePair(wire.y1, wire))
+        self.index.remove(KeyWirePair(wire.y1, wire))
 
       elif event_type == 'query':
         self.trace_sweep_line(event_x)
         
         
         if count_only:
-        	result+=self.index.count(KeyWirePairL(wire.y1),
-        					KeyWirePairH(wire.y2))
+          result+=self.index.count(KeyWirePairL(wire.y1),
+                  KeyWirePairH(wire.y2))
 
         else:
-        	cross_wires = []
-        	for kwp in self.index.list(KeyWirePairL(wire.y1),
+          for kwp in self.index.list(KeyWirePairL(wire.y1),
                                    KeyWirePairH(wire.y2)):
-        		cross_wires.append(kwp.wire)
-        		
-        		for cross_wire in cross_wires:
-        			result.add_crossing(wire, cross_wire)
+              result.add_crossing(wire, kwp.wire)
 
     return result
   
