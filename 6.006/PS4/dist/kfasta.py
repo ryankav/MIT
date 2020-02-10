@@ -61,7 +61,7 @@ class TestKFASTA(unittest.TestCase):
         seq = FastaSequence('trivial.fa')
         i = 0
         for subseq in subsequences(seq, 3):
-            print subseq
+            print(subseq)
             i += 1
         self.assertTrue(24 == i)
 #if __name__ == '__main__':
