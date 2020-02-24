@@ -33,6 +33,7 @@ class NodeDistancePair(object):
         """
         self.node = node
         self.distance = distance
+        self.parent = None
         
     def __lt__(self, other):
         # :nodoc: Delegate comparison to distance.
@@ -195,7 +196,49 @@ class PathFinder(object):
             A tuple: (the path as a list of nodes from source to destination, 
                       the number of visited nodes)
         """
-        return NotImplemented 
+        parents={}
+        node_dist={}
+        new_source = NodeDistancePair(source,0)
+        parents[new_source.node]=None
+        node_dist[source]=new_source
+        active=source
+        priority=PriorityQueue()
+        
+        while active!=destination:
+            
+            for node in active.adj:
+                if parents.get(node,False):
+                    continue
+                distance=node_dist[active].distance+weight(active,node)
+                if not node_dist.get(node,False):
+                    key=NodeDistancePair(node,distance)
+                    node_dist[node]=key
+                    key.parent=active
+                    priority.insert(key)
+                    continue
+                if node_dist[node].distance>distance:
+                    key=node_dist[node]
+                    key.distance=distance
+                    key.parent=active
+                    priority.decrease_key(key)
+                    continue
+            
+            new_min=priority.extract_min()
+            parents[new_min.node]=new_min.parent
+            active=new_min.node
+        
+        path = []
+        path.append(destination)
+        node=destination
+        while parents[node]:
+            a=parents[node]
+            path.append(a)
+            node=a
+        path=path[::-1]
+        
+        return path,len(parents)
+                    
+        
         
     @staticmethod
     def from_file(file, network):

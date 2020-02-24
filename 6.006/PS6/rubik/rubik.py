@@ -40,6 +40,7 @@ would be there if the cube were solved and had its
 orange-yellow-blue cubie in position 7, with yellow
 facing down.
 """
+
 # flu refers to the front face (because f is first) of the cubie that
 # has a front face, a left face, and an upper face.
 # yob refers to the colors yellow, orange, blue that are on the
@@ -221,7 +222,7 @@ def input_configuration():
     position[18] = eval(cubie)
     position[19] = eval(cubie[1:] + cubie[0])
     position[20] = eval(cubie[2] + cubie[:2])
-    print """We already know cubie #7, so we're done."""
+    print ("""We already know cubie #7, so we're done.""")
     cubie = 'oyb'
     position[21] = eval(cubie)
     position[22] = eval(cubie[1:] + cubie[0])

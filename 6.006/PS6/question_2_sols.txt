@@ -1,0 +1,24 @@
+6-2 a) Run a depth first search algorithm on the libraries anf their dependencies and append each library to a list when the depth first search algorithm has completed it's run through a library. 
+	Then, once the depth first search has completed, reverse the lists order and that will be a valid order to install.
+
+6-2 b) Again use similar approach as before running a depth first search.
+
+psuedocode:
+
+installed_dict={...some pre-installed libraries in here ...}
+for library in P:
+	if installed_dict.get(library, False):
+		continue
+	else:
+		DFS(library, installed_dict)
+		
+
+def DFS(library, dictionary):
+
+	for dep in library.dependencies:
+		if dictionary.get(dep,False):
+			continue
+		else:
+			DFS(dep, dicitonary)
+	install(library)
+	dictionary[library]=True

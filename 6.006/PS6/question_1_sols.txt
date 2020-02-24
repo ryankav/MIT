@@ -1,0 +1,71 @@
+#Psuedocode 1
+
+as implied by the complexity will try a bellman-ford style approach initially.
+
+for each vertex v:
+	v.connection=0
+source.connection=1
+count=0
+while count < k:
+	
+	updates={}
+	for each edge E:
+		node_con_tuple=relax(E) #if we relax edge now could end up missing a couple of nodes on the last pass
+		if node_con_tuple==None:
+			continue
+		updates[node_con_tuple[0]]=node_con_tuple[1]
+	
+	for key,value in updates.item():
+		
+		key.connection=value
+
+	count+=1
+
+
+def relax(edge):
+	connection=edge.u.connection * edge.weight
+	if edge.v.connection < connection:
+		return edge.v, connection
+	else:
+		return None
+		
+
+#Psuedocode 2
+
+The above code has the desired result of finding the strongest connection which is at most length k.
+
+However, if instead we were interested in finding the strongest connection for each node which is at most k away - even if 
+the path of  strongest connection is longer could do an alternative approach
+
+1) perform BFS to find all the nodes at most k away. - Don't need to worry aboutparent pointers here
+
+priority=Priority_Queue() #allows for lookups, insertion, deletion and minimise_key
+priority.add(source,1)
+frontier=[source]
+count = 0 
+
+while count<k:
+	next=[]
+	for node in frontier:
+		for neighbour in node.adj:
+			if priority.get(neighbour,False):
+				continue
+			next.append(neighbour)
+			priority.add(neighbour,0)
+	frontier=next
+	count+=1
+
+#now can apply Dijkstra by popping the max value until the priority queue is empty
+
+completed_nodes={}
+while priority not empty:
+	value=priority.max_remove()
+	completed_nodes[value]=True
+	for neighbour in value.adj:
+		if completed_nodes.get(neighbour,False):
+			continue
+		if not priority.get(nieghbour,False): #this ensures that the node is within the range
+			continue
+		
+		relax(value,neighbour) #relaxes the edge similar to above and resorts the priority queue if needed
+
