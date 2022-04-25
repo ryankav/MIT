@@ -1,0 +1,3 @@
+[submodule "6.006"]
+	path = 6.006
+	url = git@github.com:ryankav/6.006-Introduction-to-Algorithms.git
